@@ -30,7 +30,7 @@ public class LoginPage {
     /**
      * Находим кнопочку
      */
-    @FindBy(xpath = "//*[contains(text(), 'Войти')]")
+    @FindBy(xpath = "/html/body/div/div/div/form/div[3]/button")
     private WebElement loginButton;
 
     /**
