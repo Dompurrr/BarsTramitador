@@ -1,6 +1,7 @@
 Main.class
 pagesWorkers\ProfilePage.class
 pagesWorkers\SummaryPage.class
+MarksClass.class
 StudentClass.class
 pagesWorkers\LoginPage.class
 ConfProperties.class

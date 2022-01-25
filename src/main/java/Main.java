@@ -1,9 +1,11 @@
+import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import pagesWorkers.*;
 import io.github.bonigarcia.wdm.WebDriverManager;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 import java.util.concurrent.TimeUnit;
@@ -15,11 +17,12 @@ public class Main {
     public static WebDriver driver;
     private static StudentClass user;
     private static Integer timeout;
+    public static MarksClass currentMarks;
 
     public static void main(String[] args) {
-        System.out.println("Bars Tramitador. test-0.1");
+        System.out.println("Bars Tramitador. test-1.0");
         System.out.println("Made by Dompurrr <3");
-        System.out.println("Привет");
+        System.out.printf("Привет\n");
         System.out.println("Проверь что ввел все данные в конфиг (resources/conf.properties). Формат каждой строки:");
         System.out.println("Параметр = значение");
         System.out.println("Необходимы: login, password, timeout (минимальный 10 секунд)");
@@ -38,7 +41,7 @@ public class Main {
         tramitador();
         tearDown();
         try {
-            user.saveMarksInFile();
+            user.firstMarks.saveMarksInFile();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -72,26 +75,44 @@ public class Main {
         user.userId = profilePage.getUserId();
         profilePage.goToSvodka();
         List<WebElement> SummaryRows = summaryPage.getRows();
-        user.rowsImporter(SummaryRows);
-        System.out.println("INFO: Number of subjects: " + user.subjectsNum);
+        user.firstMarks.rowsImporter(SummaryRows);
+        System.out.println("INFO: Number of subjects: " + user.firstMarks.getSubjectsNum());
         List<WebElement> SummaryCols = summaryPage.getCols();
-        user.colsImporter(SummaryCols);
-        System.out.println("INFO: Number of weeks: " + user.weeksNum);
-        user.makeMarksMatrix(driver);
+        user.firstMarks.colsImporter(SummaryCols);
+        System.out.println("INFO: Number of weeks: " + user.firstMarks.getWeeksNum());
+        user.firstMarks.makeMarksMatrix(driver);
     }
 
     private static void tramitador(){
         boolean work = true;
         int counter = 0;
+        currentMarks = new MarksClass();
         while (work){
             try {
                 Thread.sleep(timeout * 1000);
                 driver.navigate().refresh();
+                currentMarks = getCurMarks();
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-            if (counter < 2) counter++;
-            else work = false;
+            if (currentMarks.equals(user.firstMarks)){
+                System.out.println("Оценки не изменились, ожидаем...");
+                continue;
+            }
+            else{
+                work = false;
+            }
         }
+        System.out.println("Оценки изменились!");
+    }
+
+    private static MarksClass getCurMarks(){
+        MarksClass toReturn = new MarksClass();
+        List<WebElement> tmpRows = summaryPage.getRows();
+        toReturn.rowsImporter(tmpRows);
+        List<WebElement> tmpCols = summaryPage.getCols();
+        toReturn.colsImporter(tmpCols);
+        toReturn.makeMarksMatrix(driver);
+        return toReturn;
     }
 }
