@@ -8,7 +8,7 @@ public class ConfProperties {
 
     static {
         try {
-            fileInputStream = new FileInputStream("conf.properties");
+            fileInputStream = new FileInputStream("conf.properties"); //src/main/resources
             PROPERTIES = new Properties();
             PROPERTIES.load(fileInputStream);
         } catch (IOException e) {
