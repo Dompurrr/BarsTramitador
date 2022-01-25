@@ -20,7 +20,7 @@ public class Main {
     public static MarksClass currentMarks;
 
     public static void main(String[] args) {
-        System.out.println("Bars Tramitador. test-0.1");
+        System.out.println("Bars Tramitador. test-1.0");
         System.out.println("Made by Dompurrr <3");
         System.out.printf("Привет\n");
         System.out.println("Проверь что ввел все данные в конфиг (resources/conf.properties). Формат каждой строки:");
